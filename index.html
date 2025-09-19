@@ -61,21 +61,21 @@
             background-color: #1a6fc4;
             color: white;
         }
-        .btn-correct {
-            background-color: #28a745;
-            color: white;
+        .timer-container {
+            background-color: #f8f9fa;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+            text-align: center;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
-        .btn-incorrect {
-            background-color: #dc3545;
-            color: white;
+        .timer-display {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1a237e;
         }
-        .btn-unanswered {
-            background-color: #6c757d;
-            color: white;
-        }
-        .btn-no-answer {
-            background-color: #ffc107;
-            color: black;
+        .timer-warning {
+            color: #dc3545;
         }
         .results-panel {
             background-color: white;
@@ -107,16 +107,22 @@
         .subject-row {
             margin-bottom: 30px;
         }
-        .correct-answer {
-            display: inline-block;
-            width: 30px;
-            height: 30px;
-            line-height: 30px;
-            text-align: center;
-            background-color: #28a745;
-            color: white;
-            border-radius: 50%;
-            margin-right: 5px;
+        .subject-result {
+            background-color: #e9ecef;
+            border-radius: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
+        }
+        .subject-percentage {
+            font-size: 1.5rem;
+            font-weight: bold;
+        }
+        .negative-percentage {
+            color: #dc3545;
+        }
+        .exam-finished {
+            opacity: 0.7;
+            pointer-events: none;
         }
         @media (max-width: 768px) {
             .option-btn {
@@ -140,41 +146,50 @@
             <div class="col-lg-8">
                 <h2 class="exam-title text-center">آزمون هفتگی</h2>
                 
+                <div class="timer-container">
+                    <h4>زمان باقیمانده</h4>
+                    <div class="timer-display" id="timer">01:00:00</div>
+                    <p id="current-subject">زیست شناسی (سوالات ۱ تا ۳۰)</p>
+                </div>
+                
                 <div class="text-center mb-4">
-                    <button id="resetBtn" class="btn btn-outline-danger me-2"><i class="bi bi-arrow-clockwise"></i> ریست پاسخها</button>
-                    <button id="submitBtn" class="btn btn-success"><i class="bi bi-check-circle"></i> محاسبه نمره</button>
+                    <button id="startBtn" class="btn btn-success me-2"><i class="bi bi-play-circle"></i> شروع آزمون</button>
+                    <button id="resetBtn" class="btn btn-outline-danger me-2" disabled><i class="bi bi-arrow-clockwise"></i> ریست پاسخها</button>
+                    <button id="submitBtn" class="btn btn-success" disabled><i class="bi bi-check-circle"></i> محاسبه نمره</button>
                 </div>
                 
-                <div class="subject-row">
-                    <h4 class="subject-label">زیست شناسی (سوالات ۱ تا ۳۰)</h4>
-                    <div class="row" id="biology-questions">
-                        <!-- Biology questions will be generated here -->
+                <div id="exam-content">
+                    <div class="subject-row">
+                        <h4 class="subject-label">زیست شناسی (سوالات ۱ تا ۳۰)</h4>
+                        <div class="row" id="biology-questions">
+                            <!-- Biology questions will be generated here -->
+                        </div>
                     </div>
-                </div>
-                
-                <div class="subject-row">
-                    <h4 class="subject-label">فیزیک (سوالات ۳۱ تا ۴۰)</h4>
-                    <div class="row" id="physics-questions">
-                        <!-- Physics questions will be generated here -->
+                    
+                    <div class="subject-row">
+                        <h4 class="subject-label">فیزیک (سوالات ۳۱ تا ۴۰)</h4>
+                        <div class="row" id="physics-questions">
+                            <!-- Physics questions will be generated here -->
+                        </div>
                     </div>
-                </div>
-                
-                <div class="subject-row">
-                    <h4 class="subject-label">شیمی (سوالات ۴۱ تا ۵۰)</h4>
-                    <div class="row" id="chemistry-questions">
-                        <!-- Chemistry questions will be generated here -->
+                    
+                    <div class="subject-row">
+                        <h4 class="subject-label">شیمی (سوالات ۴۱ تا ۵۰)</h4>
+                        <div class="row" id="chemistry-questions">
+                            <!-- Chemistry questions will be generated here -->
+                        </div>
                     </div>
-                </div>
-                
-                <div class="subject-row">
-                    <h4 class="subject-label">ریاضی (سوالات ۵۱ تا ۶۰)</h4>
-                    <div class="row" id="math-questions">
-                        <!-- Math questions will be generated here -->
+                    
+                    <div class="subject-row">
+                        <h4 class="subject-label">ریاضی (سوالات ۵۱ تا ۶۰)</h4>
+                        <div class="row" id="math-questions">
+                            <!-- Math questions will be generated here -->
+                        </div>
                     </div>
-                </div>
-                
-                <div class="text-center mt-4 mb-5">
-                    <button id="submitBtn2" class="btn btn-success btn-lg"><i class="bi bi-check-circle"></i> محاسبه نمره نهایی</button>
+                    
+                    <div class="text-center mt-4 mb-5">
+                        <button id="submitBtn2" class="btn btn-success btn-lg" disabled><i class="bi bi-check-circle"></i> محاسبه نمره نهایی</button>
+                    </div>
                 </div>
             </div>
             
@@ -187,6 +202,26 @@
                             <p>تعداد صحیح: <span id="correctCount">0</span></p>
                             <p>تعداد غلط: <span id="wrongCount">0</span></p>
                             <p>بی پاسخ: <span id="unansweredCount">60</span></p>
+                        </div>
+                        
+                        <div id="subjectResults" class="mt-4">
+                            <h5>نتایج دروس</h5>
+                            <div class="subject-result">
+                                <div>زیست شناسی</div>
+                                <div class="subject-percentage" id="biology-percentage">0%</div>
+                            </div>
+                            <div class="subject-result">
+                                <div>فیزیک</div>
+                                <div class="subject-percentage" id="physics-percentage">0%</div>
+                            </div>
+                            <div class="subject-result">
+                                <div>شیمی</div>
+                                <div class="subject-percentage" id="chemistry-percentage">0%</div>
+                            </div>
+                            <div class="subject-result">
+                                <div>ریاضی</div>
+                                <div class="subject-percentage" id="math-percentage">0%</div>
+                            </div>
                         </div>
                     </div>
                     
@@ -214,7 +249,11 @@
                                             <tr>
                                                 <th>ردیف</th>
                                                 <th>نام دانش آموز</th>
-                                                <th>درصد</th>
+                                                <th>درصد کل</th>
+                                                <th>زیست</th>
+                                                <th>فیزیک</th>
+                                                <th>شیمی</th>
+                                                <th>ریاضی</th>
                                             </tr>
                                         </thead>
                                         <tbody id="resultsTableBody">
@@ -244,6 +283,7 @@
             loadSavedAnswers();
             
             // Set up event listeners
+            document.getElementById('startBtn').addEventListener('click', startExam);
             document.getElementById('submitBtn').addEventListener('click', calculateScore);
             document.getElementById('submitBtn2').addEventListener('click', calculateScore);
             document.getElementById('resetBtn').addEventListener('click', resetAnswers);
@@ -253,7 +293,96 @@
             
             // Initialize correct answers in admin panel
             initializeCorrectAnswers();
+            
+            // Disable exam content initially
+            document.getElementById('exam-content').classList.add('exam-finished');
         });
+
+        // Timer variables
+        let timerInterval;
+        let totalSeconds = 0;
+        let examStarted = false;
+
+        // Start the exam
+        function startExam() {
+            if (!examStarted) {
+                examStarted = true;
+                document.getElementById('startBtn').disabled = true;
+                document.getElementById('resetBtn').disabled = false;
+                document.getElementById('submitBtn').disabled = false;
+                document.getElementById('submitBtn2').disabled = false;
+                document.getElementById('exam-content').classList.remove('exam-finished');
+                
+                // Calculate total time based on subject times
+                // زیست: 30 سوال × 60 ثانیه = 1800 ثانیه
+                // فیزیک: 10 سوال × 90 ثانیه = 900 ثانیه
+                // شیمی: 10 سوال × 60 ثانیه = 600 ثانیه
+                // ریاضی: 10 سوال × 100 ثانیه = 1000 ثانیه
+                totalSeconds = 1800 + 900 + 600 + 1000;
+                
+                startTimer();
+            }
+        }
+
+        // Start the countdown timer
+        function startTimer() {
+            clearInterval(timerInterval);
+            
+            timerInterval = setInterval(function() {
+                if (totalSeconds <= 0) {
+                    clearInterval(timerInterval);
+                    finishExam();
+                    return;
+                }
+                
+                totalSeconds--;
+                updateTimerDisplay();
+                
+                // Update current subject based on remaining time
+                updateCurrentSubject();
+            }, 1000);
+            
+            updateTimerDisplay();
+        }
+
+        // Update timer display
+        function updateTimerDisplay() {
+            const hours = Math.floor(totalSeconds / 3600);
+            const minutes = Math.floor((totalSeconds % 3600) / 60);
+            const seconds = totalSeconds % 60;
+            
+            const timerDisplay = document.getElementById('timer');
+            timerDisplay.textContent = `${hours.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}:${seconds.toString().padStart(2, '0')}`;
+            
+            if (totalSeconds < 300) { // Less than 5 minutes
+                timerDisplay.classList.add('timer-warning');
+            } else {
+                timerDisplay.classList.remove('timer-warning');
+            }
+        }
+
+        // Update current subject based on remaining time
+        function updateCurrentSubject() {
+            const subjectElement = document.getElementById('current-subject');
+            
+            if (totalSeconds > 3300) { // زیست: 1800 + 900 + 600 = 3300
+                subjectElement.textContent = "زیست شناسی (سوالات ۱ تا ۳۰)";
+            } else if (totalSeconds > 2400) { // فیزیک: 900 + 600 = 1500 -> 3300-1500=1800
+                subjectElement.textContent = "فیزیک (سوالات ۳۱ تا ۴۰)";
+            } else if (totalSeconds > 1800) { // شیمی: 600 -> 2400-600=1800
+                subjectElement.textContent = "شیمی (سوالات ۴۱ تا ۵۰)";
+            } else {
+                subjectElement.textContent = "ریاضی (سوالات ۵۱ تا ۶۰)";
+            }
+        }
+
+        // Finish the exam when time is up
+        function finishExam() {
+            examStarted = false;
+            document.getElementById('exam-content').classList.add('exam-finished');
+            alert("زمان آزمون به پایان رسید. پاسخ‌های شما ثبت شد.");
+            calculateScore();
+        }
 
         // Initialize all questions
         function initializeQuestions() {
@@ -291,6 +420,7 @@
             const optionButtons = container.querySelectorAll('.option-btn');
             optionButtons.forEach(btn => {
                 btn.addEventListener('click', function() {
+                    if (!examStarted) return;
                     const questionNum = this.getAttribute('data-question');
                     const option = this.getAttribute('data-option');
                     selectOption(questionNum, option);
@@ -301,6 +431,7 @@
             const noAnswerButtons = container.querySelectorAll('.btn-no-answer');
             noAnswerButtons.forEach(btn => {
                 btn.addEventListener('click', function() {
+                    if (!examStarted) return;
                     const questionNum = this.getAttribute('data-question');
                     selectOption(questionNum, 0);
                 });
@@ -432,6 +563,12 @@
             let wrongCount = 0;
             let unansweredCount = 0;
             
+            // Subject-specific counts
+            let biologyCorrect = 0, biologyWrong = 0, biologyUnanswered = 0;
+            let physicsCorrect = 0, physicsWrong = 0, physicsUnanswered = 0;
+            let chemistryCorrect = 0, chemistryWrong = 0, chemistryUnanswered = 0;
+            let mathCorrect = 0, mathWrong = 0, mathUnanswered = 0;
+            
             // Check if correct answers are set
             if (Object.keys(correctAnswers).length === 0) {
                 alert('لطفاً ابتدا پاسخ‌های صحیح را از طریق پنل مدیریت設定 کنید.');
@@ -442,10 +579,28 @@
             for (let i = 1; i <= 60; i++) {
                 if (!studentAnswers[i] || studentAnswers[i] == 0) {
                     unansweredCount++;
+                    
+                    // Count by subject
+                    if (i <= 30) biologyUnanswered++;
+                    else if (i <= 40) physicsUnanswered++;
+                    else if (i <= 50) chemistryUnanswered++;
+                    else mathUnanswered++;
                 } else if (studentAnswers[i] == correctAnswers[i]) {
                     correctCount++;
+                    
+                    // Count by subject
+                    if (i <= 30) biologyCorrect++;
+                    else if (i <= 40) physicsCorrect++;
+                    else if (i <= 50) chemistryCorrect++;
+                    else mathCorrect++;
                 } else {
                     wrongCount++;
+                    
+                    // Count by subject
+                    if (i <= 30) biologyWrong++;
+                    else if (i <= 40) physicsWrong++;
+                    else if (i <= 50) chemistryWrong++;
+                    else mathWrong++;
                 }
             }
             
@@ -454,54 +609,59 @@
             const score = (3 * correctCount - wrongCount) / (3 * totalQuestions) * 100;
             const finalPercentage = Math.max(0, score).toFixed(2);
             
+            // Calculate subject percentages
+            const biologyPercentage = calculateSubjectPercentage(biologyCorrect, biologyWrong, 30);
+            const physicsPercentage = calculateSubjectPercentage(physicsCorrect, physicsWrong, 10);
+            const chemistryPercentage = calculateSubjectPercentage(chemistryCorrect, chemistryWrong, 10);
+            const mathPercentage = calculateSubjectPercentage(mathCorrect, mathWrong, 10);
+            
             // Display results
             document.getElementById('correctCount').textContent = correctCount;
             document.getElementById('wrongCount').textContent = wrongCount;
             document.getElementById('unansweredCount').textContent = unansweredCount;
             document.getElementById('percentage').textContent = `${finalPercentage}%`;
             
-            // Save student result
-            saveStudentResult(finalPercentage);
+            // Display subject results
+            document.getElementById('biology-percentage').textContent = `${biologyPercentage}%`;
+            document.getElementById('physics-percentage').textContent = `${physicsPercentage}%`;
+            document.getElementById('chemistry-percentage').textContent = `${chemistryPercentage}%`;
+            document.getElementById('math-percentage').textContent = `${mathPercentage}%`;
             
-            // Show correct/wrong answers
-            showAnswerFeedback(correctAnswers, studentAnswers);
+            // Apply negative percentage styling
+            applyNegativePercentageStyle('biology-percentage', biologyPercentage);
+            applyNegativePercentageStyle('physics-percentage', physicsPercentage);
+            applyNegativePercentageStyle('chemistry-percentage', chemistryPercentage);
+            applyNegativePercentageStyle('math-percentage', mathPercentage);
+            
+            // Save student result
+            saveStudentResult(finalPercentage, biologyPercentage, physicsPercentage, chemistryPercentage, mathPercentage);
+            
+            // Stop the exam after calculation
+            if (examStarted) {
+                clearInterval(timerInterval);
+                document.getElementById('exam-content').classList.add('exam-finished');
+                examStarted = false;
+            }
         }
 
-        // Show visual feedback for correct/wrong answers
-        function showAnswerFeedback(correctAnswers, studentAnswers) {
-            for (let i = 1; i <= 60; i++) {
-                const studentAnswer = studentAnswers[i] || 0;
-                const correctAnswer = correctAnswers[i] || 0;
-                
-                if (studentAnswer === 0) {
-                    // No answer
-                    const noAnswerBtn = document.querySelector(`.btn-no-answer[data-question="${i}"]`);
-                    if (noAnswerBtn) {
-                        noAnswerBtn.classList.add('btn-unanswered');
-                    }
-                } else {
-                    const optionBtn = document.querySelector(`.option-btn[data-question="${i}"][data-option="${studentAnswer}"]`);
-                    if (optionBtn) {
-                        if (studentAnswer == correctAnswer) {
-                            optionBtn.classList.add('btn-correct');
-                        } else {
-                            optionBtn.classList.add('btn-incorrect');
-                        }
-                    }
-                }
-                
-                // Show correct answer
-                if (correctAnswer !== 0) {
-                    const correctOptionBtn = document.querySelector(`.option-btn[data-question="${i}"][data-option="${correctAnswer}"]`);
-                    if (correctOptionBtn && !correctOptionBtn.classList.contains('btn-correct')) {
-                        correctOptionBtn.classList.add('btn-correct');
-                    }
-                }
+        // Calculate percentage for a subject
+        function calculateSubjectPercentage(correct, wrong, total) {
+            const score = (3 * correct - wrong) / (3 * total) * 100;
+            return Math.max(-20, score).toFixed(2); // Ensure minimum of -20%
+        }
+
+        // Apply negative percentage styling
+        function applyNegativePercentageStyle(elementId, percentage) {
+            const element = document.getElementById(elementId);
+            if (parseFloat(percentage) < 0) {
+                element.classList.add('negative-percentage');
+            } else {
+                element.classList.remove('negative-percentage');
             }
         }
 
         // Save student result to localStorage
-        function saveStudentResult(percentage) {
+        function saveStudentResult(percentage, biology, physics, chemistry, math) {
             // In a real application, you would have student identification
             // For this demo, we'll use a generic student name
             const studentName = prompt('لطفاً نام خود را وارد کنید:', 'دانش‌آموز');
@@ -511,6 +671,10 @@
             results.push({
                 name: studentName,
                 percentage: percentage,
+                biology: biology,
+                physics: physics,
+                chemistry: chemistry,
+                math: math,
                 timestamp: new Date().toLocaleString('fa-IR')
             });
             
@@ -539,19 +703,30 @@
                 // Reset UI
                 const optionButtons = document.querySelectorAll('.option-btn');
                 optionButtons.forEach(btn => {
-                    btn.classList.remove('btn-selected', 'btn-correct', 'btn-incorrect');
+                    btn.classList.remove('btn-selected');
                     btn.classList.add('btn-outline-primary');
                 });
                 
                 const noAnswerButtons = document.querySelectorAll('.btn-no-answer');
                 noAnswerButtons.forEach(btn => {
-                    btn.classList.remove('btn-warning', 'btn-unanswered');
+                    btn.classList.remove('btn-warning');
                 });
                 
                 document.getElementById('correctCount').textContent = '0';
                 document.getElementById('wrongCount').textContent = '0';
                 document.getElementById('unansweredCount').textContent = '60';
                 document.getElementById('percentage').textContent = '0%';
+                
+                document.getElementById('biology-percentage').textContent = '0%';
+                document.getElementById('physics-percentage').textContent = '0%';
+                document.getElementById('chemistry-percentage').textContent = '0%';
+                document.getElementById('math-percentage').textContent = '0%';
+                
+                // Remove negative percentage styling
+                document.getElementById('biology-percentage').classList.remove('negative-percentage');
+                document.getElementById('physics-percentage').classList.remove('negative-percentage');
+                document.getElementById('chemistry-percentage').classList.remove('negative-percentage');
+                document.getElementById('math-percentage').classList.remove('negative-percentage');
             }
         }
 
@@ -582,7 +757,7 @@
             tbody.innerHTML = '';
             
             if (results.length === 0) {
-                tbody.innerHTML = '<tr><td colspan="3" class="text-center">نتیجه‌ای یافت نشد</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="7" class="text-center">نتیجه‌ای یافت نشد</td></tr>';
                 return;
             }
             
@@ -592,6 +767,10 @@
                     <td>${index + 1}</td>
                     <td>${result.name}</td>
                     <td>${result.percentage}%</td>
+                    <td>${result.biology}%</td>
+                    <td>${result.physics}%</td>
+                    <td>${result.chemistry}%</td>
+                    <td>${result.math}%</td>
                 `;
                 tbody.appendChild(row);
             });
